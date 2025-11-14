@@ -48,17 +48,17 @@ read_letter <- function(xml_path) {
   doc <- read_xml(xml_path)
   ns <- xml_ns(doc)
   
-  date <- xml_find_first(doc, '//d1:correspAction[@type="sending"]/d1:date') |> 
+  date <- xml_find_all(doc, '//d1:correspAction[@type="sending"]/d1:date') |> 
     xml_attr('when') |> 
     trimws()
   date
   
-  corresp <- xml_find_first(doc, '//d1:correspAction[@type="receiving"]/d1:persName') |> 
+  corresp <- xml_find_all(doc, '//d1:correspAction[@type="receiving"]/d1:persName') |> 
     xml_text() |> 
     trimws()
   corresp
   
-  vol <- xml_find_first(doc, '//d1:biblScope[@unit="vol"]') |> 
+  vol <- xml_find_all(doc, '//d1:biblScope[@unit="vol"]') |> 
     xml_text() |> 
     trimws() |> 
     as.numeric()
