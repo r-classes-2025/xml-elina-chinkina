@@ -24,19 +24,19 @@ doc <- read_xml(test_xml)
 ns <- xml_ns(doc)
   
 # дата письма
-date <- xml_find_all(doc, '//d1:correspAction[@type="sending"]//d1:date', ns=ns) |> 
+date <- xml_find_first(doc, '//d1:correspAction[@type="sending"]//d1:date', ns=ns) |> 
   xml_attr('when') |> 
   trimws()
 date
 
 # адресат письма
-corresp <- xml_find_all(doc, '//d1:correspAction[@type="receiving"]//d1:persName') |> 
+corresp <- xml_find_first(doc, '//d1:correspAction[@type="receiving"]//d1:persName') |> 
   xml_text() |> 
   trimws()
 corresp
 
 # том 
-vol <- xml_find_all(doc, '//d1:biblScope[@unit="vol"]') |> 
+vol <- xml_find_first(doc, '//d1:biblScope[@unit="vol"]') |> 
   xml_text() |> 
   trimws() |> 
   as.numeric()
@@ -48,17 +48,17 @@ read_letter <- function(xml_path) {
   doc <- read_xml(xml_path)
   ns <- xml_ns(doc)
   
-  date <- xml_find_all(doc, '//d1:correspAction[@type="sending"]//d1:date', ns=ns) |> 
+  date <- xml_find_first(doc, '//d1:correspAction[@type="sending"]/d1:date') |> 
     xml_attr('when') |> 
     trimws()
   date
   
-  corresp <- xml_find_all(doc, '//d1:correspAction[@type="receiving"]//d1:persName', ns=ns) |> 
+  corresp <- xml_find_first(doc, '//d1:correspAction[@type="receiving"]/d1:persName') |> 
     xml_text() |> 
     trimws()
   corresp
   
-  vol <- xml_find_all(doc, '//d1:biblScope[@unit="vol"]', ns=ns) |> 
+  vol <- xml_find_first(doc, '//d1:biblScope[@unit="vol"]') |> 
     xml_text() |> 
     trimws() |> 
     as.numeric()
@@ -70,10 +70,13 @@ read_letter <- function(xml_path) {
     vol=vol
    )
   
+  print(res)
+  
   return(res)
 }
 
 
 # Прочтите все письма в один тиббл при помощи map_dfr(). 
 letters_tbl <- map_dfr(my_xmls, read_letter)
+
 
